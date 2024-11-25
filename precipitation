@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Scatter Plot</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #plotContainer {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Scatter Plot of Customers vs. Precipitation</h1>
+
+    <!-- Dropdown to select different customer types -->
+    <label for="customerType">Select Customer Type:</label>
+    <select id="customerType" onchange="updatePlot()">
+        <option value="casual">Casual Customers</option>
+        <option value="registered">Registered Customers</option>
+        <option value="total">Total Customers</option>
+    </select>
+
+    <!-- Container for the Plotly chart -->
+    <div id="plotContainer"></div>
+
+    <script>
+        // Your data arrays (you can extend this with real data)
+        const precip = [10, 20, 30, 40, 50];  // Example precipitation data
+        const casual = [100, 200, 150, 300, 400];  // Example casual customers
+        const registered = [300, 400, 350, 500, 600];  // Example registered customers
+
+        // Data for the scatter plot (default is Casual Customers)
+        let plotData = {
+            x: precip,
+            y: casual,
+            mode: 'markers',
+            type: 'scatter',
+            name: 'Casual Customers'
+        };
+
+        // Layout for the plot
+        const layout = {
+            title: 'Casual Customers vs. Precipitation',
+            xaxis: {
+                title: 'Precipitation (mm)'
+            },
+            yaxis: {
+                title: 'Casual Customers'
+            },
+            showlegend: true
+        };
+
+        // Initial plot
+        Plotly.newPlot('plotContainer', [plotData], layout);
+
+        // Function to update the plot based on selected customer type
+        function updatePlot() {
+            const customerType = document.getElementById("customerType").value;
+
+            if (customerType === "casual") {
+                plotData = {
+                    x: precip,
+                    y: casual,
+                    mode: 'markers',
+                    type: 'scatter',
+                    name: 'Casual Customers'
+                };
+                layout.title = 'Casual Customers vs. Precipitation';
+                layout.yaxis.title = 'Casual Customers';
+            } else if (customerType === "registered") {
+                plotData = {
+                    x: precip,
+                    y: registered,
+                    mode: 'markers',
+                    type: 'scatter',
+                    name: 'Registered Customers'
+                };
+                layout.title = 'Registered Customers vs. Precipitation';
+                layout.yaxis.title = 'Registered Customers';
+            } else if (customerType === "total") {
+                const total = casual.map((c, i) => c + registered[i]);  // Calculate total customers
+                plotData = {
+                    x: precip,
+                    y: total,
+                    mode: 'markers',
+                    type: 'scatter',
+                    name: 'Total Customers'
+                };
+                layout.title = 'Total Customers vs. Precipitation';
+                layout.yaxis.title = 'Total Customers';
+            }
+
+            // Redraw the plot with updated data
+            Plotly.react('plotContainer', [plotData], layout);
+        }
+    </script>
+</body>
+</html>
